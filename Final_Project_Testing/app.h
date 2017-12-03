@@ -88,6 +88,7 @@ void DrawPlayer();
 void Handshake(bool player);
 void DrawObjectsClient();
 void DrawObjects();
+void DrawArena();
 void IdleThread();
 
 #endif /* APP_H_ */

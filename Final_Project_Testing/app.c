@@ -487,6 +487,8 @@ void ReadJoystickHost()
     while(1)
     {
         GetJoystickCoordinates(&xCoord, &yCoord);
+        //bmi160_read_accel_x(&xCoord);
+        //bmi160_read_accel_y(&yCoord);
         if(xCoord > 4000 || (xCoord <-4000)){
         for(int i = 16; i < 210; i+=32)
         {
@@ -521,6 +523,10 @@ void ReadJoystickHost()
             }
         }
         }
+        if(host.xpos > 240) host.xpos = 240;
+        if(host.ypos > 208) host.ypos = 208;
+        if(host.xpos < 16)  host.xpos = 16;
+        if(host.ypos < 16)  host.ypos = 16;
         G8RTOS_OS_Sleep(20);
     }
 }
@@ -570,6 +576,10 @@ void ReadJoystickClient()
             }
         }
         }
+        if(client.xpos > 240) client.xpos = 240;
+        if(client.ypos > 208) client.ypos = 208;
+        if(client.xpos < 16)  client.xpos = 16;
+        if(client.ypos < 16)  client.ypos = 16;
         G8RTOS_OS_Sleep(20);
     }
 }
@@ -585,3 +595,40 @@ void DrawPlayer(Player_t* player, Prevplayer_t* oldplayer, uint16_t* tablePlayer
     }
 }
 
+void DrawArena()
+{
+    for(int j = 16; j < 288-48; j+=16)
+    {
+        LCD_DrawRectangle(j+16, j+16, 0, 15, LCD_BLACK);
+        LCD_DrawRectangle(j+16, j+16, 225, 240, LCD_BLACK);
+    }
+
+    for(int j = 16; j < 208; j+=16)
+    {
+        LCD_DrawRectangle(0, 15, j+16, j+16, LCD_BLACK);
+        LCD_DrawRectangle(305-48, 320-48, j+16, j+16, LCD_BLACK);
+    }
+
+    LCD_DrawRectangle(0, 320-48, 15, 15, LCD_BLACK);
+    LCD_DrawRectangle(0, 320-48, 225, 225, LCD_BLACK);
+    LCD_DrawRectangle(15, 15, 0, 240, LCD_BLACK);
+    LCD_DrawRectangle(305-48, 305-48, 0, 240, LCD_BLACK);
+    LCD_DrawRectangle(305-32, 305-32, 0, 240, LCD_BLACK);
+
+    LCD_DrawRectangle(16, 304-48, 16, 224, LCD_GREEN);
+    LCD_DrawRectangle(16, 31, 16, 31, LCD_WHITE);
+    LCD_Bomberman(16, 31, 16, 31, tablehost);
+
+    for(int i = 32; i < 224; i+=32)
+    {
+        for(int j = 32; j < 250; j+=32)
+        {
+            LCD_DrawRectangle(j, j+14, i, i+14, LCD_GRAY);
+            LCD_DrawRectangle(j, j+15, i+15, i+15, LCD_BLACK);
+            if(j < 288)
+            {
+                LCD_DrawRectangle(j+15, j+15, i, i+15, LCD_BLACK);
+            }
+        }
+    }
+}

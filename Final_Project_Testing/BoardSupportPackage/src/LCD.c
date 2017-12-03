@@ -319,13 +319,20 @@ void LCD_SetPoint(uint16_t Xpos, uint16_t Ypos, uint16_t color)
  *******************************************************************************/
 inline void LCD_Write_Data_Only(uint16_t data)
 {
+
+    UCB3TXBUF = data >> 8;
+    while((UCB3STATW & UCBUSY) != 0);
+    UCB3TXBUF = data & 0xff;
+    while((UCB3STATW & UCBUSY) != 0);
+
     /* Send out MSB */ 
-    SPI_transmitData(EUSCI_B3_BASE, data >> 8);          /* Write D8..D15                */
-    while(EUSCI_B_SPI_isBusy(EUSCI_B3_BASE));
+    //SPI_transmitData(EUSCI_B3_BASE, data >> 8);          /* Write D8..D15                */
+    //while(EUSCI_B_SPI_isBusy(EUSCI_B3_BASE));
 
     /* Send out LSB */ 
-    SPI_transmitData(EUSCI_B3_BASE, data & 0xFF);        /* Write D0..D7                 */
-    while(EUSCI_B_SPI_isBusy(EUSCI_B3_BASE));
+    //SPI_transmitData(EUSCI_B3_BASE, data & 0xFF);        /* Write D0..D7                 */
+    //while(EUSCI_B_SPI_isBusy(EUSCI_B3_BASE));
+
 }
 
 /*******************************************************************************
@@ -394,9 +401,13 @@ inline void LCD_WriteIndex(uint16_t index)
  *******************************************************************************/
 inline uint8_t SPISendRecvByte (uint8_t byte)
 {
-    SPI_transmitData(EUSCI_B3_BASE, byte);
-    while(EUSCI_B_SPI_isBusy(EUSCI_B3_BASE));
-    return SPI_receiveData(EUSCI_B3_BASE);
+    UCB3TXBUF = byte;
+    while((UCB3STATW & UCBUSY) != 0);
+    return 0;
+
+    //SPI_transmitData(EUSCI_B3_BASE, byte);
+    //while(EUSCI_B_SPI_isBusy(EUSCI_B3_BASE));
+    //return SPI_receiveData(EUSCI_B3_BASE);
 }
 
 /*******************************************************************************
